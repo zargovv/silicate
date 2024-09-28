@@ -1,0 +1,8 @@
+[package]
+edition = "2021"
+name = "quote"
+publish = false
+version = "0.0.0"
+
+[lib]
+proc-macro = true

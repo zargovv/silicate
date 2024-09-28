@@ -1,0 +1,16 @@
+[workspace]
+members = ["quote"]
+
+[package]
+edition = "2021"
+name = "silicate"
+publish = false
+version = "0.0.0"
+
+[features]
+default = ["parse", "quote"]
+parse = []
+quote = ["dep:quote"]
+
+[dependencies]
+quote = { path = "quote", optional = true }
