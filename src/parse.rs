@@ -2,12 +2,21 @@ extern crate proc_macro;
 
 use std::{
   iter::{self, Peekable},
+  ops::Deref,
   slice,
 };
 
 use proc_macro::{token_stream, Delimiter, Literal, TokenStream, TokenTree};
 
 pub struct Attr(TokenStream);
+
+impl Deref for Attr {
+  type Target = TokenStream;
+
+  fn deref(&self) -> &Self::Target {
+    &self.0
+  }
+}
 
 impl IntoIterator for Attr {
   type Item = TokenTree;
@@ -39,6 +48,14 @@ impl<T: Iterator<Item = TokenTree>> From<&mut Peekable<T>> for Attr {
 }
 
 pub struct Vis(TokenStream);
+
+impl Deref for Vis {
+  type Target = TokenStream;
+
+  fn deref(&self) -> &Self::Target {
+    &self.0
+  }
+}
 
 impl IntoIterator for Vis {
   type Item = TokenTree;
