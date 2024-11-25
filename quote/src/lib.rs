@@ -231,7 +231,7 @@ fn quote_literal(literal: &Literal) -> TokenStream {
         let (method, lit) = if lit
           .chars()
           .next()
-          .map_or(false, |c| c == '-' || c.is_numeric())
+          .is_some_and(|c| c == '-' || c.is_numeric())
         {
           (
             "i32_unsuffixed",

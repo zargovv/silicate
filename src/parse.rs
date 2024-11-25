@@ -185,14 +185,14 @@ impl FieldDescriptor {
   }
 }
 
-impl From<Option<TokenTree>> for FieldDescriptor {
-  fn from(value: Option<TokenTree>) -> Self {
-    let Some(token) = value else {
+impl<T: Iterator<Item = TokenTree>> From<&mut Peekable<T>> for FieldDescriptor {
+  fn from(value: &mut Peekable<T>) -> Self {
+    if !matches!(value.peek(), Some(TokenTree::Group(_))) {
       return Self::None;
-    };
+    }
 
-    let TokenTree::Group(group) = token else {
-      unreachable!("Definition body expected");
+    let Some(TokenTree::Group(group)) = value.next() else {
+      unreachable!();
     };
 
     let tuple = match group.delimiter() {
@@ -233,7 +233,7 @@ impl From<TokenStream> for Struct {
       unreachable!("Struct ident expected");
     };
 
-    let fields = FieldDescriptor::from(stream_iter.next());
+    let fields = FieldDescriptor::from(&mut stream_iter);
 
     Self {
       attr,
@@ -286,7 +286,7 @@ impl From<TokenStream> for Enum {
       let Some(TokenTree::Ident(ident)) = stream_iter.next() else {
         unreachable!("Enum variant ident expected");
       };
-      let fields = FieldDescriptor::from(stream_iter.next());
+      let fields = FieldDescriptor::from(&mut stream_iter);
 
       if matches!(stream_iter.peek(), Some(TokenTree::Punct(p)) if p.as_char() == ',') {
         stream_iter.next();
